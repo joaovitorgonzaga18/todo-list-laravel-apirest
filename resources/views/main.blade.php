@@ -124,7 +124,7 @@
                 </div>
                 <div class="row" id="btn-nova-tarefa" style="display:none;">
                     <div class="col-md-12" style="margin-top: 20px; text-align: center;">
-                        <button type="button" class="btn btn-success" onclick="" data-toggle="modal" data-target=".modal-tasks"><i class="fa-solid fa-plus"></i> Nova tarefa</button>
+                        <button type="button" class="btn btn-success" onclick="clear_forms()" data-toggle="modal" data-target=".modal-tasks"><i class="fa-solid fa-plus"></i> Nova tarefa</button>
                     </div>
                 </div>
             </div>

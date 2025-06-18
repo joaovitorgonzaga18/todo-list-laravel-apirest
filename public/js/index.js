@@ -43,8 +43,8 @@ function load_tasks(list_id) {
                     '<th>' + task.id + '</th>' +
                     '<td>' + task.name + '</td>' +
                     '<td>' +
-                    '<button type="button" class="btn btn-'+ ((task.done == 0) ? 'success' : 'danger') +'" onclick="update_task(this, ' + task.list_id + ')"><i class="fa-solid fa-'+ ((task.done == 0) ? 'check' : 'xmark') +'"></i></button>' +
-                    '<button type="button" class="btn btn-primary" onclick=""><i class="fa-solid fa-pen-to-square"></i></button>' +
+                    '<button type="button" class="btn btn-'+ ((task.done == 0) ? 'success' : 'danger') +'" onclick="change_status(' + task.id + ')"><i class="fa-solid fa-'+ ((task.done == 0) ? 'check' : 'xmark') +'"></i></button>' +
+                    '<button type="button" class="btn btn-primary" onclick="load_task_form(' + task.id + ')" data-toggle="modal" data-target=".modal-tasks"><i class="fa-solid fa-pen-to-square"></i></button>' +
                     '</td>' +
                     '</tr>');
             })
@@ -55,13 +55,40 @@ function load_tasks(list_id) {
 
         },
         error: function(response) {
-
+            
         }
     })
 }
 
-function update_task(btn, task_id) {
+function clear_forms() {    
+    $("#list-name").val("")
+    $("#task-name").val("")
+    $("#task_id").val(0)
+}
 
+function load_task_form(task_id) {    
+	$("body").LoadingOverlay("show")    
+    $.ajax({
+        type: 'GET',
+        dataType: "json",
+        url: "/api/tasks/"+task_id,
+        success: function (response) {
+            $("#task-name").val(response.name)
+            $("#task_id").val(response.id)
+            $("body").LoadingOverlay("hide")
+        }
+    })
+}
+
+function change_status(task_id) {
+    $.ajax({
+        type: 'PUT',
+        dataType: "json",
+        url: "/api/tasks/changestatus/"+task_id,
+        success: function (response) {
+            load_tasks(response.list_id)
+        }
+    })
 }
 
 $(document).ready(function() {
@@ -71,16 +98,17 @@ $(document).ready(function() {
         event.preventDefault();
         
         $.ajax({
-            type: 'post',
+            type: 'POST',
             url: '/api/lists/create',
             data: {'name' : $("#list-name").val()},
             success: function (data) {
-                console.log('Lista cadastrada com sucesso!');
-                console.log(data);
+                alert('Lista cadastrada com sucesso!');
+                console.log(data);                
                 load_lists()
+                clear_forms()
             },
             error: function (data) {
-                console.log('Houve um erro ao cadastrar a lista.');
+                alert('Houve um erro ao cadastrar a lista.');
                 console.log(data);
             },
         });
@@ -89,18 +117,23 @@ $(document).ready(function() {
     $('#form-cadastro-tarefa').submit(function(event) {
     
         event.preventDefault();
+
+        const task_id = $("#task_id").val()
+        const url = (task_id > 0) ? '/api/tasks/update/' + task_id : '/api/tasks/create'
+        const type = (task_id > 0) ? 'PUT' : 'POST'
         
         $.ajax({
-            type: 'post',
-            url: '/api/tasks/create',
+            type: type,
+            url: url,
             data: {'list_id' : $("#list_id").val(), 'name' : $("#task-name").val()},
             success: function (data) {
-                console.log('Tarefa cadastrada com sucesso!');
+                alert('Tarefa cadastrada com sucesso!');
                 console.log(data);
                 load_tasks(data.list_id)
+                clear_forms()
             },
             error: function (data) {
-                console.log('Houve um erro ao cadastrar a tarefa.');
+                alert('Houve um erro ao cadastrar a tarefa.');
                 console.log(data);
             },
         });
