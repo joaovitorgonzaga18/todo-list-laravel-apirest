@@ -16,6 +16,7 @@ class ListsController extends Controller {
         if (!isset($post['name']) || $post['name'] == "") {            
             return response()->json(['error' => 'Nome inválido ou vazio'], 422);
         }
+        
         $list = Lists::create($request->all());
 
         return response()->json($list, 201);
