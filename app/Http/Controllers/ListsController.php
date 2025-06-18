@@ -16,7 +16,7 @@ class ListsController extends Controller {
         if (!isset($post['name']) || $post['name'] == "") {            
             return response()->json(['error' => 'Nome inválido ou vazio'], 422);
         }
-        
+
         $list = Lists::create($request->all());
 
         return response()->json($list, 201);
@@ -28,7 +28,7 @@ class ListsController extends Controller {
         $lists = Lists::all();
 
         if ($lists->isEmpty()) {
-            return response()->json(['error' => 'Nenhuma lista encontrada'], 204);
+            return response()->json(['error' => 'Nenhuma lista encontrada'], 404);
         }
 
         return response()->json($lists);
@@ -39,8 +39,8 @@ class ListsController extends Controller {
 
         $list = Lists::find($id);
 
-        if ($list->isEmpty()) {
-            return response()->json(['error' => 'Nenhuma lista encontrada'], 204);
+        if (!$list) {
+            return response()->json(['error' => 'Nenhuma lista encontrada'], 404);
         }
 
         return response()->json($list);
@@ -51,8 +51,10 @@ class ListsController extends Controller {
 
         $list = Lists::find($id);
 
-        if ($list->isEmpty()) {
-            return response()->json(['error' => 'Nenhuma lista encontrada'], 204);
+        $post = $request->all();
+
+        if (!$list) {
+            return response()->json(['error' => 'Nenhuma lista encontrada'], 404);
         }
 
         if (!isset($post['name']) || $post['name'] == "") {            
