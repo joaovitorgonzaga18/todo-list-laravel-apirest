@@ -42,10 +42,10 @@ class TasksController extends Controller {
 
     public function updateTask(Request $request, $id) : JsonResponse {
 
-        $list = Tasks::find($id);
-        $list->update($request->all());
+        $task = Tasks::find($id);
+        $task->update($request->all());
         
-        return response()->json($list, 200);
+        return response()->json($task, 200);
 
     }
 
