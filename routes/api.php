@@ -5,11 +5,11 @@ use App\Http\Controllers\TasksController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
+/* Route::get('/user', function (Request $request) {
     return $request->user();
-})->middleware('auth:sanctum');
+})->middleware('auth:sanctum'); */
 
-Route::group(['prefix' => 'lists'], function() {
+Route::group(['prefix' => 'lists', 'middleware' => 'verify.jwt'], function() {
     Route::post('/create', [ListsController::class, 'createList']);
     Route::get('/', [ListsController::class, 'getAll']);
     Route::get('/{id}', [ListsController::class, 'getList']);
@@ -17,7 +17,7 @@ Route::group(['prefix' => 'lists'], function() {
     Route::delete('/delete/{id}', [ListsController::class, 'deleteList']);
 });
 
-Route::group(['prefix' => 'tasks'], function() {
+Route::group(['prefix' => 'tasks', 'middleware' => 'verify.jwt'], function() {
     Route::post('/create', [TasksController::class, 'createTask']);
     Route::get('/', [TasksController::class, 'getAll']);
     Route::get('/{id}', [TasksController::class, 'getTask']);
