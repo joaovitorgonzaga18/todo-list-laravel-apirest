@@ -3,6 +3,9 @@ function load_lists() {
 	$("body").LoadingOverlay("show")
 
     $.ajax({
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
         type: 'GET',
         dataType: "json",
         url: "/api/lists/",
@@ -33,6 +36,9 @@ function load_tasks(list_id) {
 	$("#list_id").val(list_id)   
 
     $.ajax({
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
         type: 'GET',
         dataType: "json",
         url: "/api/tasks/bylistid/"+list_id,
@@ -55,7 +61,7 @@ function load_tasks(list_id) {
 
         },
         error: function(response) {
-            
+            alert(response.error)
         }
     })
 }
@@ -69,6 +75,9 @@ function clear_forms() {
 function load_task_form(task_id) {    
 	$("body").LoadingOverlay("show")    
     $.ajax({
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
         type: 'GET',
         dataType: "json",
         url: "/api/tasks/"+task_id,
@@ -76,17 +85,26 @@ function load_task_form(task_id) {
             $("#task-name").val(response.name)
             $("#task_id").val(response.id)
             $("body").LoadingOverlay("hide")
+        },
+        error: function(response) {
+            alert(response.error)
         }
     })
 }
 
 function change_status(task_id) {
     $.ajax({
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
         type: 'PUT',
         dataType: "json",
         url: "/api/tasks/changestatus/"+task_id,
         success: function (response) {
             load_tasks(response.list_id)
+        },
+        error: function(response) {
+            alert(response.error)
         }
     })
 }
@@ -98,6 +116,9 @@ $(document).ready(function() {
         event.preventDefault();
         
         $.ajax({
+            headers: {
+              'Authorization': `Bearer ${token}`
+            },
             type: 'POST',
             url: '/api/lists/create',
             data: {'name' : $("#list-name").val()},
@@ -107,10 +128,9 @@ $(document).ready(function() {
                 load_lists()
                 clear_forms()
             },
-            error: function (data) {
-                alert('Houve um erro ao cadastrar a lista.');
-                console.log(data);
-            },
+            error: function(response) {
+                alert(response.error)
+            }
         });
     });
 
@@ -123,6 +143,9 @@ $(document).ready(function() {
         const type = (task_id > 0) ? 'PUT' : 'POST'
         
         $.ajax({
+            headers: {
+              'Authorization': `Bearer ${token}`
+            },
             type: type,
             url: url,
             data: {'list_id' : $("#list_id").val(), 'name' : $("#task-name").val()},
@@ -132,10 +155,9 @@ $(document).ready(function() {
                 load_tasks(data.list_id)
                 clear_forms()
             },
-            error: function (data) {
-                alert('Houve um erro ao cadastrar a tarefa.');
-                console.log(data);
-            },
+            error: function(response) {
+                alert(response.error)
+            }
         });
     });
     
