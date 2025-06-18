@@ -32,6 +32,14 @@ class TasksController extends Controller {
 
     }
 
+    public function getTasksByListID($list_id) {
+
+        $task = Tasks::all()->where('list_id', $list_id);
+
+        return response()->json($task);
+
+    }
+
     public function updateTask(Request $request, $id) : JsonResponse {
 
         $list = Tasks::find($id);
@@ -45,7 +53,7 @@ class TasksController extends Controller {
 
         Tasks::destroy($id);
 
-        return response()->json(null, 204);
+        return response()->json([], 204);
 
     }
 }
