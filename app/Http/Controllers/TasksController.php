@@ -10,6 +10,13 @@ class TasksController extends Controller {
 
     public function createTask(Request $request) {
         
+
+        $post = $request->all();
+
+        if (!isset($post['name']) || $post['name'] == "") {            
+            return response()->json(['error' => 'Nome inválido ou vazio'], 422);
+        }
+
         $task = Tasks::create($request->all());
 
         return response()->json($task, 201);
@@ -20,6 +27,10 @@ class TasksController extends Controller {
 
         $tasks = Tasks::all();
 
+        if ($tasks->isEmpty()) {
+            return response()->json(['error' => 'Nenhuma tarefa encontrada'], 404);
+        }
+
         return response()->json($tasks);
 
     }
@@ -27,6 +38,10 @@ class TasksController extends Controller {
     public function getTask($id) : JsonResponse {
 
         $task = Tasks::find($id);
+
+        if (!$task) {
+            return response()->json(['error' => 'Nenhuma tarefa encontrada'], 404);
+        }
 
         return response()->json($task);
 
@@ -43,7 +58,18 @@ class TasksController extends Controller {
     public function updateTask(Request $request, $id) : JsonResponse {
 
         $task = Tasks::find($id);
-        $task->update($request->all());
+
+        $post = $request->all();
+
+        if (!$task) {
+            return response()->json(['error' => 'Nenhuma tarefa encontrada'], 404);
+        }
+
+        if (!isset($post['name']) || $post['name'] == "") {            
+            return response()->json(['error' => 'Nome inválido ou vazio'], 422);
+        }
+        
+        $task->update($post);
         
         return response()->json($task, 200);
 
@@ -51,7 +77,11 @@ class TasksController extends Controller {
 
     public function deleteTask($id) : JsonResponse {
 
-        Tasks::destroy($id);
+        $task = Tasks::destroy($id);
+
+        if (!$task) {
+            return response()->json(['error' => 'Erro ao deletar a tarefa'], 422);
+        }
 
         return response()->json([], 204);
 
@@ -60,6 +90,11 @@ class TasksController extends Controller {
     public function changeStatus($id) : JsonResponse {
 
         $task = Tasks::find($id);
+
+        if (!$task) {
+            return response()->json(['error' => 'Nenhuma tarefa encontrada'], 404);
+        }
+
         $task->update(['done' => (($task->done == 0) ? 1 : 0)]);
         
         return response()->json($task, 200);
