@@ -11,6 +11,11 @@ class ListsController extends Controller {
 
     public function createList(Request $request) {
 
+        $post = $request->all();
+
+        if (!isset($post['name']) || $post['name'] == "") {            
+            return response()->json(['error' => 'Nome inválido ou vazio'], 422);
+        }
         $list = Lists::create($request->all());
 
         return response()->json($list, 201);
@@ -21,6 +26,10 @@ class ListsController extends Controller {
 
         $lists = Lists::all();
 
+        if ($lists->isEmpty()) {
+            return response()->json(['error' => 'Nenhuma lista encontrada'], 204);
+        }
+
         return response()->json($lists);
 
     }
@@ -29,6 +38,10 @@ class ListsController extends Controller {
 
         $list = Lists::find($id);
 
+        if ($list->isEmpty()) {
+            return response()->json(['error' => 'Nenhuma lista encontrada'], 204);
+        }
+
         return response()->json($list);
 
     }
@@ -36,6 +49,15 @@ class ListsController extends Controller {
     public function updateList(Request $request, $id) : JsonResponse {
 
         $list = Lists::find($id);
+
+        if ($list->isEmpty()) {
+            return response()->json(['error' => 'Nenhuma lista encontrada'], 204);
+        }
+
+        if (!isset($post['name']) || $post['name'] == "") {            
+            return response()->json(['error' => 'Nome inválido ou vazio'], 422);
+        }
+
         $list->update($request->all());
 
         return response()->json($list, 200);
@@ -45,6 +67,10 @@ class ListsController extends Controller {
     public function deleteList(Request $request, $id) : JsonResponse {
 
         $list = Lists::destroy($id);
+
+        if (!$list) {
+            return response()->json(['error' => 'Erro ao deletar a lista'], 422);
+        }
 
         return response()->json([], 204);
 
