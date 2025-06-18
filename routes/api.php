@@ -24,4 +24,5 @@ Route::group(['prefix' => 'tasks'], function() {
     Route::get('/bylistid/{id}', [TasksController::class, 'getTasksByListID']);
     Route::put('/update/{id}', [TasksController::class, 'updateTask']);
     Route::delete('/delete/{id}', [TasksController::class, 'deleteTask']);
+    Route::put('/changestatus/{id}', [TasksController::class, 'changeStatus']);
 });

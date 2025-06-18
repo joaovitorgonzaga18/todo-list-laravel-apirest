@@ -56,4 +56,14 @@ class TasksController extends Controller {
         return response()->json([], 204);
 
     }
+
+    public function changeStatus($id) : JsonResponse {
+
+        $task = Tasks::find($id);
+        $task->update(['done' => (($task->done == 0) ? 1 : 0)]);
+        
+        return response()->json($task, 200);
+        
+        
+    }
 }
