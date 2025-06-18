@@ -1,3 +1,7 @@
+localStorage.setItem('jwt_token', 'YOUR_GENERATED_TOKEN_HERE')
+
+const token = localStorage.getItem('jwt_token')
+
 function load_lists() {
 	
 	$("body").LoadingOverlay("show")
